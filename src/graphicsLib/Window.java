@@ -1,5 +1,7 @@
 package graphicsLib;
 
+// source: https://depts.washington.edu/cprogs/BCS/Books/BCS_MidJava.html
+
 /*
  *
  * Window is both a JPanel which contains the paint proc and it is
