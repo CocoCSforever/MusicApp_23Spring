@@ -18,6 +18,7 @@ public class Paint extends Window {
     // call the paintComponent function up in the window class, which is a placeholder
     @Override
     public void paintComponent(Graphics g){
+        // os creates a space for Graphics g, paintComponent to draw
         G.clearBack(g);
         g.setColor(G.rndColor()); // graphic object.function that's in Graphics (pass in the RED which is in the Color class)
         paths.draw(g);
@@ -42,12 +43,8 @@ public class Paint extends Window {
 //        g.drawRect(x, y-a, w, h);
     }
 
-    // put static at the bottom
-    public static void main(String[] args){
-        PANEL = new Paint();
-        launch(); // launch a window
-    }
-
+    // way to tell class descended from, want all same data/functions and add extra stuff in class
+    // get behavior of class - want to use name but deal with it
     @Override
     public void mousePressed (MouseEvent me){
         // click++;
@@ -65,9 +62,17 @@ public class Paint extends Window {
         repaint();
     }
 
+    // put static at the bottom?
+    // take an array of strings as parameters
+    public static void main(String[] args){
+        PANEL = new Paint();
+        launch(); // launch a window
+    }
+
     // ---------------------nested class-----------PATH------------
     public static class Path extends ArrayList<Point> {
         // default constructor
+
         public void draw(Graphics g){
             for (int i = 1; i < size(); i++) {
                 Point p = get(i-1), n = get(i); // previous and next points
