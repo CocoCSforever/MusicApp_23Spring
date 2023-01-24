@@ -31,6 +31,12 @@ public class G {
         public VS(int x, int y, int w, int h){loc = new V(x, y); size = new V(w, h);}
         public void fill(Graphics g, Color c){g.setColor(c); g.fillRect(loc.x, loc.y, size.x, size.y);}
         public boolean hit(int x, int y){return loc.x <= x && x <= loc.x + size.x && loc.y <= y && y <= loc.y + size.y;}
+        public int xL(){return loc.x;}
+        public int xH(){return loc.x+size.x;}
+        public int xM(){return loc.x + size.x/2;}
+        public int yL(){return loc.y;}
+        public int yH(){return loc.y+size.y;}
+        public int yM(){return loc.y + size.y/2;}
     }
     // --------------LoHi----------------//
     // two numbers: lo and hi represent a range of numbers.
