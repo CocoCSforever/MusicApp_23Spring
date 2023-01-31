@@ -24,7 +24,14 @@ public class Squares extends Window implements ActionListener {
     public static Timer timer;
     public static G.V pressedLoc = new G.V(0, 0);
     public static final int WIDTH = UC.MAIN_WINDOW_WIDTH, HEIGHT = UC.MAIN_WINDOW_HEIGHT;
-
+    public static I.Area curArea;
+    public static Square BACKGROUND = new Square(0, 0){
+        // Anonymous Classes in Java: Do something different than the normal Square
+        public void dn(int x, int y){theSquare = new Square(x, y); theList.add(theSquare);}
+        public void drag(int x, int y){theSquare.resize(x, y);}
+    };
+    //static{} is the static block
+    static {BACKGROUND.c = Color.WHITE; BACKGROUND.size.set(5000, 5000); theList.add(BACKGROUND);}
 
     // Window requires constructor, so we have a red line if we don't have constructor
     // new Window();
@@ -40,6 +47,10 @@ public class Squares extends Window implements ActionListener {
         G.clearBack(g);
 //        theVS.fill(g, theColor);
         theList.draw(g);
+//        call Spline when the window has three boxes; >3 as the backgorund is counted as 0
+        if(theList.size() > 3){
+            Spline.pSpline(g, theList.get(1).loc, theList.get(2).loc, theList.get(3).loc, 5);
+        }
     }
 
     public void mousePressed(MouseEvent me){
@@ -47,20 +58,22 @@ public class Squares extends Window implements ActionListener {
             theColor = G.rndColor();
         }*/
         int x = me.getX(), y = me.getY();
-        theSquare = theList.hit(x, y); // capture
-        if(theSquare == null){dragging = false; theSquare = new Square(x, y); theList.add(theSquare);}
-        else{dragging = true;
-            theSquare.dv.set(0, 0); pressedLoc.set(x, y);
-            mouseDelta.set(theSquare.loc.x-x, theSquare.loc.y-y);}
-
-        // call os to paintComponent
-        repaint();
+        curArea = theList.hit(x, y);
+        curArea.dn(x, y);
+        repaint();// call os to paintComponent
+//        //1.24th
+//        theSquare = theList.hit(x, y); // capture
+//        if(theSquare == null){dragging = false; theSquare = new Square(x, y); theList.add(theSquare);}
+//        else{dragging = true;
+//            theSquare.dv.set(0, 0); pressedLoc.set(x, y);
+//            mouseDelta.set(theSquare.loc.x-x, theSquare.loc.y-y);}
         // swing: build menus, using labels, scrollbars. instead of how to use swing, the focus is on how to write swing.
     }
 
     public void mouseDragged(MouseEvent me){
         int x = me.getX(), y = me.getY();
-        if(dragging){theSquare.move(x+mouseDelta.x, y+mouseDelta.y);}else{theSquare.resize(x, y);}
+        curArea.drag(x, y);
+//        if(dragging){theSquare.move(x+mouseDelta.x, y+mouseDelta.y);}else{theSquare.resize(x, y);}
         repaint();
     }
 
@@ -80,7 +93,7 @@ public class Squares extends Window implements ActionListener {
     }
 
     //------------Square------------//
-    public static class Square extends G.VS implements I.Draw{
+    public static class Square extends G.VS implements I.Draw, I.Area{
         public Color c = G.rndColor(); // if we only declare, it will default set to 0 or null(reference)
         public G.V dv = new G.V(G.rnd(20)-10, G.rnd(20)-10);
         public Square(int x, int y){super(x, y, 100, 100);}
@@ -94,6 +107,20 @@ public class Squares extends Window implements ActionListener {
             if(yL() < 0 && dv.y < 0){dv.y = -dv.y;}
             if(yH() > HEIGHT && dv.y > 0){dv.y = -dv.y;}
         }
+
+//        the down object sets up the mouse delta element
+        @Override
+        public void dn(int x, int y) {mouseDelta.set(loc.x - x, loc.y - y);}
+
+//        we don't do anything when it's going up
+        @Override
+        public void up(int x, int y) {
+
+        }
+
+//        set the location of the object
+        @Override
+        public void drag(int x, int y) {loc.set(x + mouseDelta.x, y + mouseDelta.y);}
         //boolean hit already in VS class
         //public boolean hit(int x, int y){}
 
@@ -106,7 +133,6 @@ public class Squares extends Window implements ActionListener {
                 for(Square s: this){if(s.hit(x, y)){res = s;}}
                 return res;
             }
-
         }
     }
 }
