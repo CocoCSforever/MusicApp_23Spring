@@ -18,13 +18,12 @@ public class PaintInk extends Window {
         G.clearBack(g);
         g.setColor(Color.BLACK); inkList.show(g);
         g.setColor(Color.RED); Ink.BUFFER.show(g);
-        g.drawString("points: " + Ink.BUFFER.n, 600, 30);
-//        int n = inkList.size() - 1;
-//        if(n > 0){
-//            int d = inkList.get(n).norm.dist(inkList.get(n-1).norm);
-//            g.setColor((d < 1000000)? Color.BLACK: Color.RED);
-//            g.drawString("Dist: " + d, 600, 30);
-//        }
+        int n = inkList.size() - 1;
+        if(n > 0){
+            int d = inkList.get(n).norm.dist(inkList.get(n-1).norm);
+            g.setColor((d < 1000000)? Color.BLACK: Color.RED);
+            g.drawString("Dist: " + d, 600, 30);
+        }
     }
     public void mousePressed(MouseEvent me){
         Ink.BUFFER.dn(me.getX(), me.getY());
