@@ -25,6 +25,11 @@ public class G {
         public void set(int x, int y){this.x = x; this.y = y;}// need existing vector object in order to set values for nonstatic functions
         public void set(V v){x = v.x; y = v.y;}
         public void add(V v){x += v.x; y += v.y;}
+        public void blend(V v, int k){
+            set((k*x + v.x)/(k + 1),(k*y + v.y)/(k + 1)); // k is the blending #
+         }
+
+        //------methods dealing with Transform-----//
         public void setT(V v){
             set(v.tx(), v.ty());
         }

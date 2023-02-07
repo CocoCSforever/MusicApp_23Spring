@@ -45,6 +45,9 @@ public class Ink implements I.Show{
             }
             return res;
         }
+        public void blend(Norm norm, int n){
+            for(int i = 0; i < N; i++){points[i].blend(norm.points[i], n);}
+        }
     }
     //--------Buffer---------//
     public static class Buffer extends G.PL implements I.Show, I.Area{
