@@ -5,6 +5,7 @@ import UC.UC;
 import graphicsLib.G;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Ink implements I.Show{
@@ -20,7 +21,7 @@ public class Ink implements I.Show{
     public void show(Graphics g) {g.setColor(UC.defaultInkColor); norm.drawAt(g, vs);}
     //--------Norm----------//
     //compare one thing to another
-    public static class Norm extends G.PL{
+    public static class Norm extends G.PL implements Serializable {
         public static final int N = UC.normSampleSize, MAX = UC.normCoordMax;
         public static final G.VS normCoordSystem = new G.VS(0, 0, MAX, MAX);
 
@@ -57,7 +58,10 @@ public class Ink implements I.Show{
         private Buffer(){super(MAX);} // single term to read and deal with data
         public void add(int x, int y){if(n < MAX){points[n].set(x, y); bBox.add(x, y); n++;}}
         public void clear(){n = 0;}
-        public void show(Graphics g){drawNDots(g, n); bBox.draw(g);}
+        public void show(Graphics g){
+            drawNDots(g, n);
+//            bBox.draw(g);
+        }
         public boolean hit(int x, int y){return true;}
         public void dn(int x, int y){clear(); add(x, y); bBox.set(x, y);}
         public void drag(int x, int y){add(x, y);}

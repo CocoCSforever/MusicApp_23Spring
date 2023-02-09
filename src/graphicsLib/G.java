@@ -1,6 +1,7 @@
 package graphicsLib;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Random;
 
 public class G {
@@ -18,7 +19,7 @@ public class G {
     // nested class: have a file doing sth, need helper data structure(nested inside this class)
     // --------------V----------------//
     // Vector: two data points
-    public static class V{
+    public static class V implements Serializable{
         public static Transform T = new Transform(); // at any one time, using it as a constant
         public int x, y;
         public V(int x, int y){set(x, y);}
@@ -65,7 +66,7 @@ public class G {
     }
     // --------------VS----------------//
     // For rectangle: Vector and size to figure out where the corner is.
-    public static class VS{
+    public static class VS implements Serializable{
         public V loc, size;
         public VS(int x, int y, int w, int h){loc = new V(x, y); size = new V(w, h);}
         public void fill(Graphics g, Color c){g.setColor(c); g.fillRect(loc.x, loc.y, size.x, size.y);}
@@ -79,7 +80,7 @@ public class G {
     }
     // --------------LoHi----------------//
     // two numbers: lo and hi represent a range of numbers.
-    public static class LoHi{
+    public static class LoHi implements Serializable{
         public int lo, hi;
         public LoHi(int min, int max){lo = min; hi = max;}
         //clear the old range and set a new one
@@ -91,7 +92,7 @@ public class G {
     // --------------BBox----------------//
     // bounding box: min x,y and max x,y
     // horizontal and vertical bounds
-    public static class BBox{
+    public static class BBox implements Serializable{
         public LoHi h, v;
         public BBox(){h = new LoHi(0, 0); v = new LoHi(0, 0);}
         public void set(int x, int y){h.set(x); v.set(y);}
@@ -102,7 +103,7 @@ public class G {
     }
     // --------------PL----------------//
     // Polyline: a whole long list of x,y coords
-    public static class PL{
+    public static class PL implements Serializable {
         public V[] points;
         //# of points reserved for PL
         public PL(int n){
