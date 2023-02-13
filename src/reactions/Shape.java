@@ -22,7 +22,7 @@ bestDist(Ink.Norm norm): loop through the list of prototype, find the bestMatch 
 G.VS showBox: show the proto;
 show(g): loop through list and set a loc of showBox to show every proto with margin and number(nBlend) */
 public class Shape implements Serializable {
-    public static HashMap<String, Shape> DB = loadShapeDB(UC.shapeDbFileName); // keep association
+    public static DataBase DB = DataBase.load(); // keep association
     public static Shape DOT = DB.get("DOT");
     public static Collection<Shape> LIST = DB.values(); // auto updated/keep track of list of Shapes
     public static Shape bestMatch;
@@ -32,35 +32,9 @@ public class Shape implements Serializable {
 
     public Shape(String name){this.name = name;}
 
-    public static HashMap<String, Shape> loadShapeDB(String fileName){
-        HashMap<String, Shape> res = new HashMap<>();
-        res.put("DOT", new Shape("DOT"));
-        // TODO: load prior saved DB
-        try{
-            System.out.println("Attempting DB load...");
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName));
-            res = (HashMap<String, Shape>) ois.readObject();
-            System.out.println("Successfully load - found " + res.keySet());
-            ois.close();
-        } catch (Exception e) {
-            System.out.println("Load failed");
-            System.out.println(e);
-        }
-        return res;
-    }
-// serialize DB
-    public static void saveShapeDB(String fileName) {
-        try{
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName));
-            oos.writeObject(DB);
-            System.out.println("Saved " + fileName);
-            oos.close();
-        }catch(Exception e){
-            System.out.println("Failed DB save");
-            System.out.println(e);
-        }
-    }
-    public static Shape recognize(Ink ink){ // can return null
+    // can return null. check ink from a list of Shapes
+    public static Shape recognize(Ink ink){
+        // handle dots
         if(ink.vs.size.x < UC.dotThreshold && ink.vs.size.y < UC.dotThreshold){return DOT;}
         bestMatch = null;
         int bestSoFar = UC.noMatchDist;
@@ -110,11 +84,64 @@ public class Shape implements Serializable {
                 int res = (x-m)/(m+w);
                 return res < size()? res: -1; // whether click way out of proto list, return -1 instead of invalid index
             }
+
+            public void train(Ink.Norm norm){
+                if(bestDist(norm) < UC.noMatchDist){//found match -> blend
+                    bestMatch.blend(norm);
+                }else{
+                    add(new Shape.Prototype());
+                }
+            }
         }
     }
 
     //-------DataBase---------//
     public static class DataBase extends HashMap<String, Shape> {
+        public DataBase(){super(); String DOT = "DOT"; put(DOT, new Shape(DOT));}
 
+        public static DataBase load(){
+            //initialize DB
+            DataBase res;
+//            DataBase res = new HashMap<>();
+//            res.put("DOT", new Shape("DOT"));
+            // TODO: load prior saved DB
+            try{
+                System.out.println("Attempting DB load...");
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(UC.shapeDbFileName));
+                res = (DataBase) ois.readObject();
+                System.out.println("Successfully load - found " + res.keySet());
+                ois.close();
+            } catch (Exception e) {
+                System.out.println("Load failed");
+                System.out.println(e);
+                res = new DataBase();
+            }
+            return res;
+        }
+        // serialize DB
+        public static void save() {
+            try{
+                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(UC.shapeDbFileName));
+                oos.writeObject(DB);
+                System.out.println("Saved " + UC.shapeDbFileName);
+                oos.close();
+            }catch(Exception e){
+                System.out.println("Failed DB save");
+                System.out.println(e);
+            }
+        }
+
+        public Shape forcedGet(String name) {
+            if (!DB.containsKey(name)) {DB.put(name, new Shape(name));} // make sure things were there}}
+            return DB.get(name);
+        }
+        public void train(String name, Ink.Norm norm){
+            if(isLegal(name)){
+                forcedGet(name).prototypes.train(norm);
+            }
+        }
+        public static boolean isLegal(String name){
+            return !name.equals("") && !name.equals("DOT");
+        }
     }
 }

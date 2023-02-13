@@ -21,6 +21,7 @@ public class Ink implements I.Show{
     public void show(Graphics g) {g.setColor(UC.defaultInkColor); norm.drawAt(g, vs);}
     //--------Norm----------//
     //compare one thing to another
+    // ink.norm is a subSample of BUFFER, may be assigned a blended proto.
     public static class Norm extends G.PL implements Serializable {
         public static final int N = UC.normSampleSize, MAX = UC.normCoordMax;
         public static final G.VS normCoordSystem = new G.VS(0, 0, MAX, MAX);
@@ -51,6 +52,7 @@ public class Ink implements I.Show{
         }
     }
     //--------Buffer---------//
+    // Ink.BUFFER stores all the points we draw on screen with a max size
     public static class Buffer extends G.PL implements I.Show, I.Area{
         public static final int MAX = UC.inkBufferMax; // max size of buffer
         public int n; // # of actual points in the buffer

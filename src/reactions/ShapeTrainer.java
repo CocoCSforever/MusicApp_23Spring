@@ -23,7 +23,8 @@ public class ShapeTrainer extends Window {
         super("ShapeTrainer", 1000, 700);
     }
     public void setState(){
-        curState = (curName.equals("") || curName.equals("DOT"))? ILLEGAL: UNKNOWN;
+//        curState = (curName.equals("") || curName.equals("DOT"))? ILLEGAL: UNKNOWN;
+        curState = Shape.DataBase.isLegal(curName)? UNKNOWN: ILLEGAL;
         if(curState == UNKNOWN){
             if(Shape.DB.containsKey(curName)){
                 curState = KNOWN;
@@ -53,7 +54,7 @@ public class ShapeTrainer extends Window {
         System.out.println("Typed: " + c);
         // End symbols: ' ', '\r', '\n'
         curName = (c == ' ' || c == 0x0d || c == 0x0a)? "": curName+c; // SPACE/RETURN to clear
-        if(c == 0x0d || c == 0x0a){Shape.saveShapeDB(UC.shapeDbFileName);}
+        if(c == 0x0d || c == 0x0a){Shape.DataBase.save();}
         setState();
         repaint();
     }
@@ -61,29 +62,36 @@ public class ShapeTrainer extends Window {
     public void mousePressed(MouseEvent me){Ink.BUFFER.dn(me.getX(), me.getY());repaint();}
     public void mouseDragged(MouseEvent me){Ink.BUFFER.drag(me.getX(), me.getY());repaint();}
     public void mouseReleased(MouseEvent me){
-        if(curState != ILLEGAL) {
-            Ink ink = new Ink();
-            Shape.Prototype proto;
-            Shape recognized = Shape.recognize(ink);
-//            if it's a dot, user not training
-            if(recognized == Shape.DOT){removePrototype(me.getX(), me.getY());return;}
-            if (plist == null) {
-                Shape s = new Shape(curName);
-                Shape.DB.put(curName, s);
-                plist = s.prototypes;
-            }
-            if (plist.bestDist(ink.norm) < UC.noMatchDist) {
-                //Found match
-                proto = Shape.Prototype.List.bestMatch;
-                proto.blend(ink.norm);
-            } else {
-                //No good match
-                proto = new Shape.Prototype();
-                plist.add(proto);
-            }
-            setState(); // possibly Unknown but known after updating DB
-        }
+        Ink ink = new Ink();
+        Shape recognized = Shape.recognize(ink);
+        if(recognized == Shape.DOT){removePrototype(me.getX(), me.getY());return;}
+        Shape.DB.train(curName, ink.norm);
+        setState();
         repaint();
+        // After Shape.train, DataBase.forcedGet, train, isLegal
+//        if(curState != ILLEGAL) {
+//            Ink ink = new Ink();
+//            Shape.Prototype proto;
+//            Shape recognized = Shape.recognize(ink);
+//           // if it's a dot, user not training
+//            if(recognized == Shape.DOT){removePrototype(me.getX(), me.getY());return;}
+//            if (plist == null) {
+//                Shape s = new Shape(curName);
+//                Shape.DB.put(curName, s);
+//                plist = s.prototypes;
+//            }
+//            if (plist.bestDist(ink.norm) < UC.noMatchDist) {
+//                //Found match
+//                proto = Shape.Prototype.List.bestMatch;
+//                proto.blend(ink.norm);
+//            } else {
+//                //No good match
+//                proto = new Shape.Prototype();
+//                plist.add(proto);
+//            }
+//            setState(); // possibly Unknown but known after updating DB
+//        }
+//        repaint();
     }
 
     public void removePrototype(int x, int y){

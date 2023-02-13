@@ -23,7 +23,9 @@ public class PaintInk extends Window {
 
     public void paintComponent(Graphics g){
         G.clearBack(g);
-        g.setColor(Color.BLACK); inkList.show(g);
+        g.setColor(Color.BLACK); inkList.show(g); // show the black ink
+        // show the red dots, may be different from current ink bc. ink.norm may be assigned a blended proto
+        // proto: blend current norm with best matched proto
         g.setColor(Color.RED); Ink.BUFFER.show(g);
         pList.show(g);
         g.drawString("Saw: " + recognized, 700, 40);
@@ -49,6 +51,7 @@ public class PaintInk extends Window {
         recognized = s==null? "UNRECOGNIZED": s.name;
         inkList.add(ink);
         if(pList.bestDist(ink.norm) < UC.noMatchDist){
+            // if plist == null, bestDist will == noMatchDist and go to else
 //            Shape.Prototype.List.bestMatch.blend(ink.norm);
             proto = Shape.Prototype.List.bestMatch;
             proto.blend(ink.norm);
