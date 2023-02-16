@@ -11,7 +11,9 @@ import graphicsLib.G;
 /*Shape: HashMap DB stores shape and its name, DOT(shape named “dot”), LIST(list of shapes from DB.values())
 loadShapeDB(): set up-add “DOT” Shape
 recognize(Ink ink): if ink.bBox < dotThreshold, ink is actually recognized as dot and return DOT.
-else, loop through all list of proto and find the bestMatch Shape(in this Shape’s list of proto, has the minDist)*/
+else, loop through all list of proto and find the bestMatch Shape(in this Shape’s list of proto, has the minDist)
+mv-prototypes rep a list of protos under a certain shape, when it trains a norm,
+either blend it to an old proto or created and added a new proto to the list.*/
 
 /*Shape.Prototype(Ink.Norm): blend(Ink.Norm norm): blend a norm to a certain proto
 Updated Ink.Norm: added blend(Norm norm, int n)
@@ -54,7 +56,7 @@ public class Shape implements Serializable {
         }
         //--------List of Prototype-------//
         public static class List extends ArrayList<Prototype> implements Serializable{
-            public static Prototype bestMatch; // set by side effect by min/best dist
+            public static Prototype bestMatch; // set by side effect
 
             public int bestDist(Ink.Norm norm){ // bestMatch doesn't have to exist
                 bestMatch = null; // assume no match
@@ -130,7 +132,6 @@ public class Shape implements Serializable {
                 System.out.println(e);
             }
         }
-
         public Shape forcedGet(String name) {
             if (!DB.containsKey(name)) {DB.put(name, new Shape(name));} // make sure things were there}}
             return DB.get(name);
