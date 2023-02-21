@@ -13,7 +13,17 @@ add/remove reaction == remove this(reaction) from the list of Reactions of a cer
 public abstract class Reaction implements I.React{
     // bookkeeping for every item who wants to react
     private static Map byShape = new Map();
+    public static List initialReactions = new List(); // used by undo to restart
     public Shape shape;
+    public Reaction(String shapeName){
+        shape = Shape.DB.get(shapeName);
+        if(shape == null){ System.out.println("WTF? Shpae DB does not contain " + shapeName);}
+    }
+
+    public static void nuke(){
+        byShape.clear(); // wipes out everything in the map
+        initialReactions.enable();
+    }
     // take the byShape list and look to see whether self already in the list
     public void enable(){
         List list = byShape.getList(shape);
@@ -43,6 +53,9 @@ public abstract class Reaction implements I.React{
                 if(b < bestSoFar){ bestSoFar = b; res = r;}
             }
             return res;
+        }
+        public void enable(){
+            for(Reaction r: this){ r.enable();}
         }
     }
     //-------Map--------//
