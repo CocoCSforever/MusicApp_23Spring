@@ -6,6 +6,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 import static music.MusicEdi.PAGE;
+import UC.UC;
 
 public class Sys extends Mass {
     public ArrayList<Staff> staffs = new ArrayList<>(); // emphasize plural in code
@@ -17,12 +18,21 @@ public class Sys extends Mass {
         super("BACK");
         this.iSys = iSys;
         this.fmt = fmt;
+        for(int i = 0; i < fmt.size(); i++){
+            addStaff(new Staff(i, fmt.get(i)));
+        }
     }
 
     public int yTop(){
         return page.sysTop(iSys);
     }  // where the top of system goes
-
+    public int yBot(){
+        return staffs.get(staffs.size()-1).yBot();
+    }
+    public void addStaff(Staff s){
+        staffs.add(s);
+        s.sys = this;
+    }
 
     @Override
     public void show(Graphics g) {
@@ -32,6 +42,7 @@ public class Sys extends Mass {
 
     //-----------Sys.Fmt-------//
     public static class Fmt extends ArrayList<Staff.Fmt>{
+        public int maxH = UC.defaultStaffH;
         public ArrayList<Integer> staffOffset = new ArrayList<>();
 
         public int height(){

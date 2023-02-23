@@ -36,6 +36,7 @@ public abstract class Reaction implements I.React{
     public static Reaction best(Gesture g){// return the best reaction or null
         return byShape.getList(g.shape).loBid(g);
     }
+
     //-------List---------//
     public static class List extends ArrayList<Reaction>{
         public void addReaction(Reaction r){ add(r); r.enable();}
