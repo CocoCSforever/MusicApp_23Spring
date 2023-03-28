@@ -21,7 +21,6 @@ public class ReactionTest extends Window {
             public void act(Gesture g){ new Box(g.vs);}
         });
     }
-
     public void paintComponent(Graphics g){
         G.clearBack(g);
         g.setColor(Color.BLUE);
@@ -66,7 +65,7 @@ public class ReactionTest extends Window {
 
                 @Override
                 public void act(Gesture g) {
-                    Box.this.delete();
+                    Box.this.deleteMass();
                 }
             });
 
@@ -85,6 +84,6 @@ public class ReactionTest extends Window {
             });
         }
         @Override
-        public void show(Graphics g) { vs.fill(g, c);}
+        public void show(Graphics g) { vs.fill(g, c); }
     }
 }

@@ -80,8 +80,8 @@ public class Page extends Mass {
 
     @Override
     public void show(Graphics g) {
+        g.setColor(Color.BLACK);
         for(int i = 0; i < nSys; i++){
-            g.setColor(Color.BLACK);
             sysFmt.showAt(g, sysTop(i));
         }
     }
@@ -92,7 +92,5 @@ public class Page extends Mass {
         public int top = M, left = M;
         public int bot = UC.MAIN_WINDOW_HEIGHT - M;
         public int right = UC.MAIN_WINDOW_WIDTH - M;
-
-
     }
 }

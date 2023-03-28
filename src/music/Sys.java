@@ -13,11 +13,13 @@ public class Sys extends Mass {
     public Page page = PAGE;
     public int iSys;
     public Sys.Fmt fmt;
+    public Time.List times;//?
 
     public Sys(int iSys, Sys.Fmt fmt){
         super("BACK");
         this.iSys = iSys;
         this.fmt = fmt;
+        times = new Time.List(this);
         for(int i = 0; i < fmt.size(); i++){
             addStaff(new Staff(i, fmt.get(i)));
         }
@@ -39,6 +41,8 @@ public class Sys extends Mass {
         int y = yTop(), x = page.margin.left;
         g.drawLine(x, y, x, y+fmt.height());
     }
+
+    public Time getTime(int x){return times.getTime(x);}
 
     //-----------Sys.Fmt-------//
     public static class Fmt extends ArrayList<Staff.Fmt>{

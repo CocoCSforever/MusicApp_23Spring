@@ -24,15 +24,18 @@ public abstract class Reaction implements I.React{
         byShape.clear(); // wipes out everything in the map
         initialReactions.enable();
     }
+
     // take the byShape list and look to see whether self already in the list
     public void enable(){
         List list = byShape.getList(shape);
         if(!list.contains(this)){list.add(this);}
     }
+
     public void disable(){ // remove this reaction from its shape's list
         List list = byShape.getList(shape);
         list.remove(this);
     }
+
     public static Reaction best(Gesture g){// return the best reaction or null
         return byShape.getList(g.shape).loBid(g);
     }

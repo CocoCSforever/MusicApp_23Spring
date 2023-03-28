@@ -16,7 +16,7 @@ import static UC.UC.MAIN_WINDOW_HEIGHT;
 public class MusicEdi extends Window {
     public static Page PAGE;
     static{
-        Layer.createAll("BACK FORE".split(" "));
+        Layer.createAll("BACK NOTE FORE".split(" "));
 //        new Layer("BACK");
 //        new Layer("FORE");
     }
@@ -48,6 +48,13 @@ public class MusicEdi extends Window {
         g.setColor(Color.GREEN);
         Ink.BUFFER.show(g);
         Layer.ALL.show(g);
+        if(PAGE != null){
+            Glyph.CLEF_G.showAt(g, 8, 100, PAGE.margin.top + 4 * 8);
+            int H = 32;
+            Glyph.HEAD_Q.showAt(g, H, 200, PAGE.margin.top + 4 * H);
+            g.setColor(Color.RED);
+            g.drawRect(200, PAGE.margin.top + 3 * H, 24 * H / 10, 2 * H);
+        }
     }
 
     @Override
